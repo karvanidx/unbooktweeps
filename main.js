@@ -210,4 +210,15 @@ async function unbookmarkFirstN(N, options = {}) {
   return removedCount;
 }
 
-console.log('✅ Function siap dipakai. Contoh: unbookmarkFirstN(5)');
+// ---------- Runner buat DevTools Snippets ----------
+// Ctrl+Enter di snippet → dialog tanya jumlah tweet → jalan
+const input = prompt('Berapa tweet yang mau di-unbookmark?', '10');
+const N = parseInt(input, 10);
+
+if (Number.isFinite(N) && N > 0) {
+  unbookmarkFirstN(N).then((count) => {
+    console.log(`✅ Runner selesai, total di-unbookmark: ${count}`);
+  });
+} else {
+  console.log('⚠️ Dibatalkan atau angka tidak valid.');
+}

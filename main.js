@@ -84,6 +84,13 @@ async function unbookmarkFirstN(N, options = {}) {
 
       const checkboxes = [];
 
+      const counter = document.createElement('span');
+      counter.style.cssText = `color: #71767b; font-size: 13px;`;
+      const updateCounter = () => {
+        const selected = checkboxes.filter((cb) => cb.checked).length;
+        counter.textContent = `${selected}/${tweets.length} dipilih`;
+      };
+
       tweets.forEach((tw) => {
         const row = document.createElement('div');
         row.style.cssText = `
@@ -95,6 +102,7 @@ async function unbookmarkFirstN(N, options = {}) {
         checkbox.type = 'checkbox';
         checkbox.checked = true;
         checkbox.style.cssText = `margin-top: 4px; width: 18px; height: 18px; flex-shrink: 0; cursor: pointer;`;
+        checkbox.addEventListener('change', updateCounter);
         checkboxes.push(checkbox);
         row.appendChild(checkbox);
 
@@ -123,7 +131,7 @@ async function unbookmarkFirstN(N, options = {}) {
       modal.appendChild(list);
 
       const footer = document.createElement('div');
-      footer.style.cssText = `padding: 16px 20px; border-top: 1px solid #2f3336; display: flex; gap: 10px; justify-content: flex-end;`;
+      footer.style.cssText = `padding: 16px 20px; border-top: 1px solid #2f3336; display: flex; gap: 10px; align-items: center; justify-content: space-between;`;
 
       const cancelBtn = document.createElement('button');
       cancelBtn.textContent = 'Batal';
@@ -139,8 +147,26 @@ async function unbookmarkFirstN(N, options = {}) {
         background: #f4212e; color: white; cursor: pointer; font-weight: bold;
       `;
 
-      footer.appendChild(cancelBtn);
-      footer.appendChild(confirmBtn);
+      const invertBtn = document.createElement('button');
+      invertBtn.textContent = '⇅ Balik Seleksi';
+      invertBtn.style.cssText = `
+        padding: 8px 16px; border-radius: 20px; border: 1px solid #536471;
+        background: transparent; color: #e7e9ea; cursor: pointer; font-weight: bold;
+      `;
+      invertBtn.onclick = () => {
+        checkboxes.forEach((cb) => { cb.checked = !cb.checked; });
+        updateCounter();
+      };
+
+      const btnGroup = document.createElement('div');
+      btnGroup.style.cssText = `display: flex; gap: 10px;`;
+      btnGroup.appendChild(invertBtn);
+      btnGroup.appendChild(cancelBtn);
+      btnGroup.appendChild(confirmBtn);
+
+      updateCounter();
+      footer.appendChild(counter);
+      footer.appendChild(btnGroup);
       modal.appendChild(footer);
 
       overlay.appendChild(modal);
